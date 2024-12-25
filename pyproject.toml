@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pay-publicity-platform-diplom-ob2"
+version = "0.1.0"
+description = ""
+authors = ["Viktor Nikulaev <viktor_1611@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.1.4"
+pillow = "^11.0.0"
+psycopg2-binary = "^2.9.10"
+black = "^24.10.0"
+flake8 = "^7.1.1"
+python-dotenv = "^1.0.1"
+djangorestframework = "^3.15.2"
+djangorestframework-simplejwt = "^5.3.1"
+drf-yasg = "^1.21.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
