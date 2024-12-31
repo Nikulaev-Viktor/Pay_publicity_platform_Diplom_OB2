@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-f!gm&okyw#w3m8#s_1$i@*^)8ioxnzbre#*b8@@$rl&fs7s5t4
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'users',
+    'blog',
 
 ]
 
@@ -61,8 +62,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'blog_payment',
+        'USER': 'postgres',
+        'PASSWORD': 'TheBmW525760',
+        'HOST': '127.0.0.1',
+        'PORT': 5432,
     }
 }
 
@@ -103,3 +108,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/users/'
