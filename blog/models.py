@@ -1,6 +1,6 @@
 from django.db import models
 
-from users.models import NULLABLE
+from users.models import NULLABLE, User
 
 
 class Blog(models.Model):
@@ -11,7 +11,7 @@ class Blog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', help_text='Дата создания статьи')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения',
                                       help_text='Дата последнего изменения статьи')
-    author = models.ForeignKey('users.User', verbose_name='Автор', on_delete=models.CASCADE, related_name='blog_posts',
+    author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE, related_name='blog_posts',
                                **NULLABLE)
     is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Количество просмотров')
@@ -25,7 +25,7 @@ class Blog(models.Model):
         return self.title
 
     class Category(models.Model):
-        name = models.CharField(max_length=50, verbose_name='Название', help_text='Введите название категории')
+        name = models.CharField(max_length=50, verbose_name='Категория', help_text='Введите название категории')
 
         class Meta:
             verbose_name = 'Категория'
