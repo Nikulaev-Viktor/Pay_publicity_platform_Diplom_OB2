@@ -1,5 +1,5 @@
 from django.db import models
-
+from autoslug import AutoSlugField
 from users.models import NULLABLE, User
 
 
@@ -19,22 +19,30 @@ class Blog(models.Model):
     content = models.TextField(verbose_name='Содержание', help_text='Введите текст статьи')
     image = models.ImageField(upload_to='blog/', verbose_name='Изображение', help_text='Выберите изображение',
                               **NULLABLE)
+    slug = AutoSlugField(populate_from='title', unique=True, verbose_name='Slug', **NULLABLE)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', help_text='Дата создания статьи')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения',
                                       help_text='Дата последнего изменения статьи')
-    author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE, related_name='owner',
-                               **NULLABLE)
-    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.SET_NULL, **NULLABLE,
-                                 related_name="categories")
+    author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE, related_name='blogs')
+    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.SET_NULL,
+                                 related_name="categories", **NULLABLE)
     is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Количество просмотров')
-    is_subscribed = models.BooleanField(default=False, verbose_name='Подписка', help_text='Платная статья')
+    is_subscribed = models.BooleanField(default=False, verbose_name='Подписка', help_text='Доступ после оплаты')
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
+        permissions = [
+            ('add_blog', 'Add blog'),
+            ('view_blog', 'View blog'),
+            ('change_blog', 'Change blog'),
+            ('delete_blog', 'Delete blog'),
+        ]
 
-    def __str__(self):
-        return self.title
+
 
 
