@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework_simplejwt',
     'phonenumber_field',
+    'autoslug',
 
     'users',
     'blog',

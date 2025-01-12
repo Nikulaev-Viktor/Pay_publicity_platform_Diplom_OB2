@@ -1,85 +1,88 @@
-
 {% extends 'blog/base.html' %}
 {% block content %}'
 
-  <!-- Marketing messaging and featurettes
-  ================================================== -->
-  <!-- Wrap the rest of the page in another container to center all the content. -->
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
 
-  <div class="container marketing">
+<div class="container marketing">
 
-    <!-- Three columns of text below the carousel -->
-    <div class="row">
-      <div class="col-lg-4">
-        <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+  <!-- Three columns of text below the carousel -->
+  <div class="row">
+    <div class="col-lg-4">
+      <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>
+        Placeholder</title>
+        <rect width="100%" height="100%" fill="#777"/>
+        <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
+      </svg>
 
-        <h2 class="fw-normal">Heading</h2>
-        <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
-        <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-      </div><!-- /.col-lg-4 -->
-      <div class="col-lg-4">
-        <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+      <h2 class="fw-normal">Статьи</h2>
+      <p>Количество статей в нашем блоге: {{ total_posts }}</p>
+      <p><a class="btn btn-secondary" href="{% url 'blog:blog_list' %}">Подробнее &raquo;</a></p>
+    </div><!-- /.col-lg-4 -->
+    <div class="col-lg-4">
+      <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>
+        Placeholder</title>
+        <rect width="100%" height="100%" fill="#777"/>
+        <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
+      </svg>
 
-        <h2 class="fw-normal">Heading</h2>
-        <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second column.</p>
-        <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-      </div><!-- /.col-lg-4 -->
-      <div class="col-lg-4">
-        <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+      <h2 class="fw-normal">Авторы</h2>
+      <p>Количество авторов в нашем блоге: {{ unique_authors }}</p>
+      <p><a class="btn btn-secondary" href="#">Подробнее &raquo;</a></p>
+    </div><!-- /.col-lg-4 -->
+    <div class="col-lg-4">
+      <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>
+        Placeholder</title>
+        <rect width="100%" height="100%" fill="#777"/>
+        <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
+      </svg>
 
-        <h2 class="fw-normal">Heading</h2>
-        <p>And lastly this, the third column of representative placeholder content.</p>
-        <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-      </div><!-- /.col-lg-4 -->
-    </div><!-- /.row -->
+      <h2 class="fw-normal">Читатели</h2>
+      <p>Количество читателей в нашем блоге: {{ unique_members }}</p>
+      <p><a class="btn btn-secondary" href="#">Подробнее &raquo;</a></p>
+    </div><!-- /.col-lg-4 -->
+  </div><!-- /.row -->
 
 
-    <!-- START THE FEATURETTES -->
+  <!-- START THE FEATURETTES -->
 
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
+  {% for object in random_posts %}
+  <div class="row featurette">
+    {% if forloop.counter|divisibleby:2 %}
+    <div class="col-md-7 order-md-2">
+      {% else %}
       <div class="col-md-7">
-        <h2 class="featurette-heading fw-normal lh-1">First featurette heading. <span class="text-muted">It’ll blow your mind.</span></h2>
-        <p class="lead">Some great placeholder content for the first featurette here. Imagine some exciting prose here.</p>
+        {% endif %}
+        <h2 class="featurette-heading">{{ object.title }}</h2>
+        <p class="lead">{{ object.content|truncatechars:200 }}</p>
+        <small class="text-body-secondary">Дата создания: {{ object.created_at|date:"d M Y"}}</small>
+        <br>
+        <small class="text-body-secondary">Количество просмотров: {{ object.views_count }}</small>
+        <br>
+
+        {% if object.is_subscribed and not is_subscribed %}
+        <!-- Если статья платная, но пользователь не подписан -->
+        <a class="btn btn-secondary mt-3" href="{% url 'subscribe' %}">Оформить подписку &raquo;</a>
+        {% else %}
+        <!-- Если статья бесплатная или пользователь подписан -->
+        <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' object.pk %}">Читать статью &raquo;</a>
+        {% endif %}
       </div>
+
       <div class="col-md-5">
-        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-
+        <img src="/media/{{ object.image }}" width="500" height="500">
       </div>
     </div>
+  </div>
+  <hr class="featurette-divider">
+  {% endfor %}
 
-    <hr class="featurette-divider">
 
-    <div class="row featurette">
-      <div class="col-md-7 order-md-2">
-        <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span class="text-muted">See for yourself.</span></h2>
-        <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
-      </div>
-      <div class="col-md-5 order-md-1">
-        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-
-      </div>
-    </div>
-
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
-      <div class="col-md-7">
-        <h2 class="featurette-heading fw-normal lh-1">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
-        <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
-      </div>
-      <div class="col-md-5">
-        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-
-      </div>
-    </div>
-
-    <hr class="featurette-divider">
-
-    <!-- /END THE FEATURETTES -->
-
-  </div><!-- /.container -->
+  <!-- /END THE FEATURETTES -->
 
 
   {% endblock %}

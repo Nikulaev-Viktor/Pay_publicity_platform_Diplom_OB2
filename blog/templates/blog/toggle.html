@@ -1,0 +1,30 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    {% for object in object_list %}
+    <div class="card mb-4 mx-auto" style="width: 25rem;">
+        <div class="card-body text-center">
+            <p class="lead">{{ object.title }}</p>
+            <div class="card-footer">
+
+                {% if object.is_published %}
+                <a href="{% url 'blog:toggle_activity' object.pk %}" class="btn btn-danger">Деактивировать</a>
+                {% else %}
+                <a href="{% url 'blog:toggle_activity' object.pk %}" class="btn btn-success">Активировать</a>
+                {% endif %}
+            </div>
+            <div class="btn-group">
+                {% if blog.is_subscribed %}
+                <a href="{% url 'blog:toggle_subscription' object.pk %}" class="btn btn-warning">Сделать бесплатной</a>
+                {% else %}
+                <a href="{% url 'blog:toggle_subscription' object.pk %}" class="btn btn-primary">Сделать платной</a></a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

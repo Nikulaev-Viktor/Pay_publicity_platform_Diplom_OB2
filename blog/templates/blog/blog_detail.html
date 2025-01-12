@@ -1,0 +1,34 @@
+{% extends 'blog/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card shadow-sm mb-3">
+            <img src="/media/{{ blog.image }}"/>
+
+
+            <div class="card-body">
+                <h5 class="card-title">{{ blog.title }}</h5>
+                <p class="card-text">{{ blog.content }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <a class="btn btn-primary" href="{% url 'blog:list' %}" role="button">Назад</a>
+                    </div>
+                    <div class="btn-group">
+                        {% if perms.blog.can_change_blog %}
+                           <a class="btn btn-warning" href="{% url 'blog:update' blog.pk %}" role="button">Редактировать</a>
+                              {% endif %}
+                          {% if perms.blog.can_delete_blog %}
+                          <a class="btn btn-danger" href="{% url 'blog:delete' blog.pk %}" role="button">Удалить</a>
+                                  {% endif %}
+                    </div>
+                </div>
+                <small class="text-body-secondary">Количество просмотров {{ object.views_count }}</small>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

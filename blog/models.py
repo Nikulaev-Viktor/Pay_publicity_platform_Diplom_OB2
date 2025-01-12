@@ -24,8 +24,8 @@ class Blog(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения',
                                       help_text='Дата последнего изменения статьи')
     author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE, related_name='blogs')
-    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.SET_NULL,
-                                 related_name="categories", **NULLABLE)
+    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.CASCADE,
+                                 related_name="categories")
     is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
     views_count = models.PositiveIntegerField(default=0, verbose_name='Количество просмотров')
     is_subscribed = models.BooleanField(default=False, verbose_name='Подписка', help_text='Доступ после оплаты')
@@ -37,10 +37,9 @@ class Blog(models.Model):
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
         permissions = [
-            ('add_blog', 'Add blog'),
-            ('view_blog', 'View blog'),
-            ('change_blog', 'Change blog'),
-            ('delete_blog', 'Delete blog'),
+            ('can_view_blog', 'Can view blog'),
+            ('can_change_blog', 'Can change blog'),
+            ('can_delete_blog', 'Can delete blog'),
         ]
 
 

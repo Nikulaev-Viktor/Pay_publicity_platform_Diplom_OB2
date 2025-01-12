@@ -1,0 +1,52 @@
+{% extends 'blog/base.html' %}
+{% load my_tags %}
+{% block content %}
+    <a class="btn btn-primary" href="{% url 'blog:index' %}" role="button">На главную</a>
+{% if perms.blog.can_add_blog %}
+        <div>
+            <a href="{% url 'blog:create' %}" class="btn btn-outline-secondary">Создать статью</a>
+        </div>
+    {% endif %}
+<br>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+
+    {% for blog in object_list %}
+    <div class="col">
+        {% if blog.is_published %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <img src="/media/{{ blog.image }}" width="250" height="300/>
+
+
+                <small class="text-body-secondary">Дата создания {{ blog.created_at|date:"d M Y" }}</small>
+                <small class="text-body-secondary">Количество просмотров {{ blog.views_count }}</small>
+
+
+                <h5 class="card-title">{{ blog.title }} </h5>
+
+                <p class="card-text">{{ blog.content|truncatechars:100 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    {% if blog.is_subscribed and not is_subscribed %}
+        <!-- Если статья платная, но пользователь не подписан -->
+        <a class="btn btn-secondary mt-3" href="{% url 'subscribe' %}">Оформить подписку &raquo;</a>
+        {% else %}
+        <!-- Если статья бесплатная или пользователь подписан -->
+        <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' object.pk %}">Читать статью &raquo;</a>
+        {% endif %}
+
+                    {% if perms.blog.can_change_blog and perms.blog.can_delete_blog %}
+                    <a class="btn btn-warning" href="{% url 'blog:update' blog.pk %}" role="button">Редактировать</a>
+                    <a class="btn btn-danger" href="{% url 'blog:delete' blog.pk %}" role="button">Удалить</a>
+                    {% endif %}
+
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
