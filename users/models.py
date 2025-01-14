@@ -9,6 +9,7 @@ NULLABLE = {'blank': True, 'null': True}
 
 
 class User(AbstractUser):
+    """Класс пользователей"""
     username = models.CharField(max_length=150, unique=False, blank=True, null=True)
     name = models.CharField(max_length=50, verbose_name='Имя', help_text='Введите имя')
     phone = PhoneNumberField(max_length=20, unique=True, verbose_name='Номер телефона',
@@ -49,3 +50,26 @@ class User(AbstractUser):
             self.otp_code = None  # Код подтвержден, удаляем его
             self.save()
         return is_valid, message
+
+
+class Payment(models.Model):
+    """Класс платежей"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', related_name='payments')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма платежа')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания',
+                                      help_text='Дата создания платежа')
+    stripe_session_id = models.CharField(max_length=255, verbose_name='ID сессии Stripe')
+    status = models.CharField(max_length=50, choices=[('pending', 'Ожидание'),
+                                                      ('paid', 'Оплачено'), ('failed', 'Ошибка')], default='pending',
+                              verbose_name='Статус платежа')
+
+    class Meta:
+        verbose_name = 'Платеж'
+        verbose_name_plural = 'Платежи'
+
+    def __str__(self):
+        return f'Платеж {self.id} - {self.user} - {self.amount} руб.'
+
+
+
+

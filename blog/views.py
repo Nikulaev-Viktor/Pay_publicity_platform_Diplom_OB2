@@ -112,7 +112,6 @@ def toggle_activity(request, pk):
         blog_item.is_published = False
     else:
         blog_item.is_published = True
-
     blog_item.save()
     return redirect(reverse('blog:list'))
 
@@ -129,7 +128,10 @@ def CreateBlogList(request):
 def toggle_subscription(request, pk):
     """Функция переключения подписки на статью"""
     blog_item = get_object_or_404(Blog, pk=pk)
-    blog_item.is_subscribed = not blog_item.is_subscribed
+    if blog_item.is_subscribed:
+        blog_item.is_subscribed = False
+    else:
+        blog_item.is_subscribed = True
     blog_item.save()
     return redirect(reverse('blog:list'))
 
