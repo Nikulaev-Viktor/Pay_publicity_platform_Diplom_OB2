@@ -1,0 +1,26 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="col-8">
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Подтвердите удаление профиля
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p>Вы уверены, что хотите удалить свой профиль? Это действие необратимо.</p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Удалить профиль</button>
+                        <a href="{% url 'users:profile' %}" class="btn btn-secondary">Отменить</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

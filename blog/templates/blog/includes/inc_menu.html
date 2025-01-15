@@ -10,6 +10,14 @@
                 <ul class="list-unstyled">
                     <li><a href="{% url 'blog:index' %}" class="text-blue">Главная</a></li>
                     <li><a href="{% url 'blog:contacts' %}" class="text-blue">Контакты</a></li>
+                                        {% if user.is_authenticated %}
+                    <li><a href="{% url 'users:logout' %}" class="text-blue">Выход</a></li>
+                    <li><a href="{% url 'users:profile' %}" class="text-blue">Профиль</a></li>
+                    {% else %}
+                    <li><a href="{% url 'users:login' %}" class="text-blue">Вход</a></li>
+                    <li><a href="{% url 'users:register' %}" class="text-blue">Регистрация</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'blog:blog_list' %}" class="text-blue">Блог</a></li>
 
 
                 </ul>

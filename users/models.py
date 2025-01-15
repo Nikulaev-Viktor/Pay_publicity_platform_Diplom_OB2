@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.timezone import now
@@ -41,12 +43,15 @@ class User(AbstractUser):
 
     def send_mock_sms(self):
         """Имитация отправки SMS"""
+        print(f'Отправлено SMS на {self.phone}: Ваш код подтверждения: {self.otp_code}')
         send_mock_sms(self.phone, self.otp_code)
 
     def verify_otp(self, otp):
         """Проверка введенного кода"""
         is_valid, message = verify_otp(self.otp_code, self.otp_created_at, otp)
         if is_valid:
+            if self.otp_created_at < now() - timedelta(minutes=5):
+                return False, 'Срок действия OTP истек.'
             self.otp_code = None  # Код подтвержден, удаляем его
             self.save()
         return is_valid, message
