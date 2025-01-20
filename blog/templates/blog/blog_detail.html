@@ -14,7 +14,7 @@
                 <p class="card-text">{{ blog.content }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                        <a class="btn btn-primary" href="{% url 'blog:list' %}" role="button">Назад</a>
+                        <a class="btn btn-primary" href="{% url 'blog:blog_list' %}" role="button">Назад</a>
                     </div>
                     <div class="btn-group">
                         {% if perms.blog.can_change_blog %}

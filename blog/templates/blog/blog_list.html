@@ -31,10 +31,10 @@
                 <div class="d-flex justify-content-between align-items-center">
                     {% if blog.is_subscribed and not is_subscribed %}
         <!-- Если статья платная, но пользователь не подписан -->
-        <a class="btn btn-secondary mt-3" href="{% url 'subscribe' %}">Оформить подписку &raquo;</a>
+        <a class="btn btn-secondary mt-3" href="{% url 'blog:subscribe' %}">Оформить подписку &raquo;</a>
         {% else %}
         <!-- Если статья бесплатная или пользователь подписан -->
-        <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' object.pk %}">Читать статью &raquo;</a>
+        <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' pk=blog.pk %}">Читать статью &raquo;</a>
         {% endif %}
 
                     {% if perms.blog.can_change_blog and perms.blog.can_delete_blog %}

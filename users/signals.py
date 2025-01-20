@@ -6,9 +6,11 @@ from .models import User, Payment
 @receiver(post_save, sender=User)
 def send_sms_after_registration(sender, instance, created, **kwargs):
     """Отправка SMS после регистрации нового пользователя"""
-    if created:
+    if created and not instance.is_otp_sent:
         instance.generate_otp()
         instance.send_mock_sms()
+        instance.is_otp_sent = True
+        instance.save()
 
 
 @receiver(post_save, sender=Payment)

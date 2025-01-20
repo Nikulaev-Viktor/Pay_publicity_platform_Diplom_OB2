@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 
-from blog.models import Blog
+from blog.models import Blog, Category
 from users.models import User
 
 
@@ -18,7 +18,8 @@ class IndexView(TemplateView):
         context['unique_authors'] = Blog.objects.values('author').distinct().count()
         context['total_posts'] = Blog.objects.all().count()
         context['unique_members'] = User.objects.filter(is_active=True).count()
-        context['random_posts'] = Blog.objects.all().order_by('?')[:3]
+        context['random_posts'] = Blog.objects.all().order_by('?')[:4]
+        context['is_subscribed'] = self.request.user.is_authenticated and self.request.user.is_subscribed
         return context
 
 
@@ -54,7 +55,6 @@ class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     extra_context = {'title': 'Создание статьи'}
 
     def has_permission(self):
-        """Добавляем проверку на суперпользователя"""
         return self.request.user.is_superuser or super().has_permission()
 
     def form_valid(self, form):
@@ -65,12 +65,12 @@ class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class BlogListView(PermissionRequiredMixin, ListView):
+class BlogListView(ListView):
     """Контроллер просмотра статей"""
     model = Blog
     template_name = 'blog/blog_list.html'
     paginate_by = 10
-    permission_required = 'blog.can_view_blog'
+    # permission_required = 'blog.can_view_blog'
     extra_context = {'title': 'Список статей'}
 
     def get_queryset(self, *args, **kwargs):
@@ -87,13 +87,15 @@ class BlogListView(PermissionRequiredMixin, ListView):
 
 class BlogDetailView(LoginRequiredMixin, DetailView):
     """Контроллер просмотра статьи"""
+    model = Blog
+    template_name = 'blog/blog_detail.html'
+    extra_context = {'title': 'Просмотр статьи'}
 
-    def get(self, request, slug):
-        blog = Blog.objects.get(slug=slug)
-        blog.views_count += 1
-        blog.save()
-        context = {'blog': blog}
-        return render(request, 'blog/blog_detail.html', context)
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.views_count += 1
+        self.object.save()
+        return self.object
 
 
 class BlogUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -142,3 +144,30 @@ class BlogDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('blog:list')
     permission_required = 'blog.can_delete_blog'
     extra_context = {'title': 'Удаление статьи'}
+
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'blog/category_list.html'
+    paginate_by = 10
+    extra_context = {'title': 'Список статей по категориям'}
+
+
+class CategoryDetailView(ListView):
+    model = Blog
+    template_name = 'blog/category_detail.html'
+    context_object_name = 'blogs'
+    paginate_by = 10
+
+    def get_queryset(self):
+        category_id = self.kwargs['pk']
+        return Blog.objects.filter(category__id=category_id, is_published=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs['pk']
+        context['category'] = Category.objects.get(id=category_id)
+        return context
+
+
+

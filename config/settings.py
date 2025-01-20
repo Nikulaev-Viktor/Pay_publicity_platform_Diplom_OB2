@@ -1,6 +1,8 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+
+import stripe as stripe
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,3 +130,27 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+PHONENUMBER_DEFAULT_REGION = 'RU'  # Для России
+PHONENUMBER_DEFAULT_FORMAT = 'E164'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')

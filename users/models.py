@@ -15,8 +15,8 @@ class User(AbstractUser):
     username = models.CharField(max_length=150, unique=False, blank=True, null=True)
     name = models.CharField(max_length=50, verbose_name='Имя', help_text='Введите имя')
     phone = PhoneNumberField(max_length=20, unique=True, verbose_name='Номер телефона',
-                             help_text='Введите номер телефона', validators=[validate_phone_number])
-    email = models.EmailField(unique=True, verbose_name='Электронная почта', help_text='Введите электронную почту')
+                             help_text='Введите номер телефона')
+    email = models.EmailField(unique=True, verbose_name='Электронная почта', help_text='Введите электронную почту', **NULLABLE)
     tg_nick = models.CharField(max_length=50, unique=True, verbose_name='Ник в Telegram',
                                help_text='Введите ник в Telegram', **NULLABLE)
     avatar = models.ImageField(upload_to='users/', verbose_name='Аватар', help_text='Выберите изображение', **NULLABLE)
@@ -24,6 +24,7 @@ class User(AbstractUser):
     otp_code = models.CharField(max_length=6, verbose_name='Код подтверждения', help_text='Код для подтверждения',
                                 **NULLABLE)
     otp_created_at = models.DateTimeField(verbose_name='Время генерации OTP', **NULLABLE)
+    is_otp_sent = models.BooleanField(default=False, verbose_name='OTP отправлен')
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
@@ -39,7 +40,7 @@ class User(AbstractUser):
         """Генерация и сохранение OTP"""
         self.otp_code = generate_otp()
         self.otp_created_at = now()
-        self.save()
+        # self.save()
 
     def send_mock_sms(self):
         """Имитация отправки SMS"""
@@ -47,14 +48,13 @@ class User(AbstractUser):
         send_mock_sms(self.phone, self.otp_code)
 
     def verify_otp(self, otp):
-        """Проверка введенного кода"""
-        is_valid, message = verify_otp(self.otp_code, self.otp_created_at, otp)
-        if is_valid:
-            if self.otp_created_at < now() - timedelta(minutes=5):
-                return False, 'Срок действия OTP истек.'
-            self.otp_code = None  # Код подтвержден, удаляем его
-            self.save()
-        return is_valid, message
+        if not self.otp_code or self.otp_code != otp:
+            return False, 'Неверный код подтверждения.'
+        if self.otp_created_at < now() - timedelta(minutes=5):
+            return False, 'Срок действия OTP истек.'
+        self.otp_code = None  # Код подтвержден, удаляем его
+        self.save()
+        return True, 'Код подтвержден.'
 
 
 class Payment(models.Model):

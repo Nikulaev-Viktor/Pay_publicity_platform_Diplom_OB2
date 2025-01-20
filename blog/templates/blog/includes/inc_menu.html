@@ -11,7 +11,16 @@
                     <li><a href="{% url 'blog:index' %}" class="text-blue">Главная</a></li>
                     <li><a href="{% url 'blog:contacts' %}" class="text-blue">Контакты</a></li>
                                         {% if user.is_authenticated %}
-                    <li><a href="{% url 'users:logout' %}" class="text-blue">Выход</a></li>
+
+                    <li>
+                        <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link text-blue" style="padding: 0; border: none; background: none;">
+                                Выход
+                            </button>
+                        </form>
+                    </li>
+
                     <li><a href="{% url 'users:profile' %}" class="text-blue">Профиль</a></li>
                     {% else %}
                     <li><a href="{% url 'users:login' %}" class="text-blue">Вход</a></li>

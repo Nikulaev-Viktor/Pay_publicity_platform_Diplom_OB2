@@ -1,0 +1,19 @@
+{% extends 'blog/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<h1>Список категорий</h1>
+
+<p>Выберите категорию, чтобы просмотреть статьи:</p>
+
+<div class="category-list">
+    {% for category in object_list %}
+        <div class="category-item" style="margin-bottom: 10px;">
+            <a class="btn btn-lg btn-primary" href="{% url 'blog:category_detail' category.pk %}">
+                {{ category.name }}
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

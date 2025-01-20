@@ -14,17 +14,15 @@
                     <div class="card-body">
                         {% csrf_token %}
                         {{ form.as_p }}
-
-                            <button type="submit" role="button" class="btn btn-primary">
-                              Зарегистрироваться
-                              </button>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" role="button" class="btn btn-primary">
+                            Зарегистрироваться
+                        </button>
                     </div>
                 </div>
-            </div>
-  </form>
-
-
-
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -4,7 +4,8 @@ from django.urls import path
 
 from blog.apps import BlogConfig
 from blog.views import IndexView, ContactsView, BlogCreateView, BlogListView, BlogDetailView, BlogUpdateView, \
-    toggle_activity, BlogDeleteView, toggle_subscription, CreateBlogList
+    toggle_activity, BlogDeleteView, toggle_subscription, CreateBlogList, CategoryListView, CategoryDetailView, \
+    SubscribeView
 
 app_name = BlogConfig.name
 
@@ -19,5 +20,8 @@ urlpatterns = [
                   path('activity/<int:pk>/', toggle_activity, name='toggle_activity'),
                   path('subscription/<int:pk>/', toggle_subscription, name='toggle_subscription'),
                   path('toggle/', CreateBlogList, name='toggle'),
+                  path('categories/', CategoryListView.as_view(), name='category_list'),
+                  path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'),
+
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
