@@ -1,8 +1,9 @@
 {% extends 'blog/base.html' %}
 
+<title>{{ title }}</title>
+
 {% block content %}
 <div class="col-8">
-    <title>{% if title %}{{ title }}{% else %}Default Title{% endif %}</title>
     <div class="row">
         <div class="col-6">
             <form method="post" enctype="multipart/form-data">

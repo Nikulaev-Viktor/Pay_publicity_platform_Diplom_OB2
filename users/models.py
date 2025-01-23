@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.timezone import now
 from users.utils import generate_otp, send_mock_sms, verify_otp
-from users.validators import validate_phone_number
+
 from phonenumber_field.modelfields import PhoneNumberField
 
 NULLABLE = {'blank': True, 'null': True}
@@ -40,7 +40,7 @@ class User(AbstractUser):
         """Генерация и сохранение OTP"""
         self.otp_code = generate_otp()
         self.otp_created_at = now()
-        # self.save()
+        self.save()
 
     def send_mock_sms(self):
         """Имитация отправки SMS"""

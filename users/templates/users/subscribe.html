@@ -8,8 +8,8 @@
     </h4>
     <p class="mb-5">Нажмите на кнопку ниже, чтобы оформить подписку.</p>
 
-    <div class="d-flex justify-content-center">
-        <button id="checkout-button" class="btn btn-primary btn-lg">Оплатить подписку</button>
-    </div>
+    <form action="{% url 'users:create_payment' %}" method="get">
+        <button type="submit" class="btn btn-primary">Оплатить подписку</button>
+    </form>
 </div>
 {% endblock %}

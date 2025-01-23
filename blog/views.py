@@ -19,7 +19,12 @@ class IndexView(TemplateView):
         context['total_posts'] = Blog.objects.all().count()
         context['unique_members'] = User.objects.filter(is_active=True).count()
         context['random_posts'] = Blog.objects.all().order_by('?')[:4]
-        context['is_subscribed'] = self.request.user.is_authenticated and self.request.user.is_subscribed
+
+        if self.request.user.is_authenticated:
+            context['is_subscribed'] = self.request.user.is_subscribed
+        else:
+            context['is_subscribed'] = False
+
         return context
 
 
@@ -69,7 +74,7 @@ class BlogListView(ListView):
     """Контроллер просмотра статей"""
     model = Blog
     template_name = 'blog/blog_list.html'
-    paginate_by = 10
+    paginate_by = 9
     # permission_required = 'blog.can_view_blog'
     extra_context = {'title': 'Список статей'}
 
@@ -81,11 +86,16 @@ class BlogListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Список статей'
-        context['is_subscribed'] = self.request.user.is_subscribed
+
+        if self.request.user.is_authenticated:
+            context['is_subscribed'] = self.request.user.is_subscribed
+        else:
+            context['is_subscribed'] = False
+
         return context
 
 
-class BlogDetailView(LoginRequiredMixin, DetailView):
+class BlogDetailView(DetailView):
     """Контроллер просмотра статьи"""
     model = Blog
     template_name = 'blog/blog_detail.html'
@@ -96,6 +106,15 @@ class BlogDetailView(LoginRequiredMixin, DetailView):
         self.object.views_count += 1
         self.object.save()
         return self.object
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['is_subscribed'] = self.request.user.is_subscribed
+        else:
+            context['is_subscribed'] = False
+
+        return context
 
 
 class BlogUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -147,6 +166,7 @@ class BlogDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 class CategoryListView(ListView):
+    """Контроллер просмотра статей по категориям"""
     model = Category
     template_name = 'blog/category_list.html'
     paginate_by = 10
@@ -154,6 +174,7 @@ class CategoryListView(ListView):
 
 
 class CategoryDetailView(ListView):
+    """Контроллер просмотра статей по категориям"""
     model = Blog
     template_name = 'blog/category_detail.html'
     context_object_name = 'blogs'
@@ -167,6 +188,10 @@ class CategoryDetailView(ListView):
         context = super().get_context_data(**kwargs)
         category_id = self.kwargs['pk']
         context['category'] = Category.objects.get(id=category_id)
+        if self.request.user.is_authenticated:
+            context['is_subscribed'] = self.request.user.is_subscribed
+        else:
+            context['is_subscribed'] = False
         return context
 
 

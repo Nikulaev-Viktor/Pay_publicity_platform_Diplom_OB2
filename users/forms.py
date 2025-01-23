@@ -3,8 +3,6 @@ from django import forms
 from django.forms import BooleanField
 from phonenumber_field.formfields import PhoneNumberField
 
-from phonenumbers import parse, is_valid_number, format_number, PhoneNumberFormat
-
 from users.models import User
 from users.validators import validate_phone_number
 
@@ -39,21 +37,11 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
         return password2
 
     def clean_phone(self):
+        """Проверка, что номер телефона еще не зарегистрирован"""
         phone = self.cleaned_data['phone']
-
-        # Проверка, существует ли пользователь с таким номером
         if User.objects.filter(phone=phone).exists():
             raise forms.ValidationError('Пользователь с таким номером уже существует.')
         return phone
-
-    # def clean_phone(self):
-    #     """Проверка, что номер телефона еще не зарегистрирован"""
-    #     phone = self.cleaned_data['phone']
-    #     # Нормализация номера телефона в формат E.164
-    #     normalized_phone = str(phone)  # Преобразует в формат +7XXXXXXXXXX
-    #     if User.objects.filter(phone=normalized_phone).exists():
-    #         raise forms.ValidationError('Пользователь с таким номером уже существует.')
-    #     return phone
 
     def save(self, commit=True):
         """Сохраняем пользователя. Генерация OTP происходит в сигнале."""
@@ -61,14 +49,6 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
         if commit:
             user.save()  # Сохраняем пользователя без отправки SMS
         return user
-    # def save(self, commit=True):
-    #     """Генерируем OTP и отправляем SMS. Сохраняем пользователя."""
-    #     user = super().save(commit=False)
-    #     user.generate_otp()
-    #     user.send_mock_sms()
-    #     if commit:
-    #         user.save()
-    #     return user
 
 
 class OTPVerificationForm(forms.Form):
@@ -104,7 +84,8 @@ class UserProfileForm(StyleFormMixin, UserChangeForm):
 
 class PasswordResetRequestForm(forms.Form):
     """Форма для запроса сброса пароля"""
-    phone = PhoneNumberField(label='Номер телефона', widget=forms.TextInput(attrs={'placeholder': '+71234567890'}))
+    phone = PhoneNumberField(label='Номер телефона', widget=forms.TextInput(attrs={'placeholder': '+71234567890'}),
+                             validators=[validate_phone_number])
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']
@@ -114,6 +95,7 @@ class PasswordResetRequestForm(forms.Form):
 
 
 class NewPasswordForm(forms.Form):
+    """Форма для ввода нового пароля"""
     new_password1 = forms.CharField(widget=forms.PasswordInput, label="Новый пароль")
     new_password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите новый пароль")
 

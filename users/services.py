@@ -1,5 +1,6 @@
 import stripe
 from config.settings import STRIPE_API_KEY
+from users.models import Payment
 
 stripe.api_key = STRIPE_API_KEY
 
@@ -33,16 +34,24 @@ def create_stripe_session(price):
 
 def check_payment_status(user):
     """Проверяем статус оплаты в Stripe"""
-    session_id = user.payment_id
-    if not session_id:
+    payment = Payment.objects.filter(user=user).last()
+    if not payment:
         return False
 
-    session = stripe.checkout.Session.retrieve(session_id)
-    payment_status = session.get("payment_status")
+    session = stripe.checkout.Session.retrieve(payment.stripe_session_id)
+    payment_status = session.get('payment_status')
 
-    if payment_status == "paid":
+    if payment_status == 'paid':
+        payment.status = 'paid'
+    elif payment_status == 'failed':
+        payment.status = 'failed'
+    else:
+        payment.status = 'pending'
+
+    payment.save()
+
+    if payment.status == 'paid':
         user.is_subscribed = True
         user.save()
-        return True
-    elif payment_status == "failed":
-        return False
+
+    return payment.status == 'paid'

@@ -16,9 +16,7 @@ def send_mock_sms(phone, otp_code):
 
 
 def verify_otp(otp_code, otp_created_at, input_otp):
-    """
-    Проверка кода подтверждения.
-    """
+    """Проверка кода подтверждения."""
     if not otp_code:
         return False, 'Код подтверждения не был сгенерирован.'
 

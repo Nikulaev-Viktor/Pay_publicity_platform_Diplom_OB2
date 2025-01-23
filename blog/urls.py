@@ -4,8 +4,8 @@ from django.urls import path
 
 from blog.apps import BlogConfig
 from blog.views import IndexView, ContactsView, BlogCreateView, BlogListView, BlogDetailView, BlogUpdateView, \
-    toggle_activity, BlogDeleteView, toggle_subscription, CreateBlogList, CategoryListView, CategoryDetailView, \
-    SubscribeView
+    toggle_activity, BlogDeleteView, toggle_subscription, CreateBlogList, CategoryListView, CategoryDetailView
+
 
 app_name = BlogConfig.name
 

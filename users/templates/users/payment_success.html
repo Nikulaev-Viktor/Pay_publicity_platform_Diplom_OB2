@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Оплата прошла успешно!</h1>
+    <p>Поздравляем! Ваша подписка оформлена, и теперь вы можете наслаждаться полным доступом ко всем статьям блога.</p>
+
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{% url 'blog:index' %}" class="btn btn-primary btn-lg">Перейти на главную страницу</a>
+    </div>
+</div>
+{% endblock %}

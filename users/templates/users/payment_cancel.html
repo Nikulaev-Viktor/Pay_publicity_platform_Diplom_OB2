@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Оплата была отменена</h1>
+    <p>Вы отменили процесс оформления подписки. Если хотите оформить подписку снова, нажмите кнопку ниже.</p>
+
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{% url 'users:subscribe' %}" class="btn btn-danger btn-lg">Попробовать снова</a>
+    </div>
+</div>
+{% endblock %}

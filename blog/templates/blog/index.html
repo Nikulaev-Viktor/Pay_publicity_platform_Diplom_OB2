@@ -66,7 +66,7 @@
 
         {% if object.is_subscribed and not is_subscribed %}
         <!-- Если статья платная, но пользователь не подписан -->
-        <a class="btn btn-secondary mt-3" href="{% url 'blog:subscribe' %}">Оформить подписку &raquo;</a>
+        <a class="btn btn-secondary mt-3" href="{% url 'users:subscribe' %}">Оформить подписку &raquo;</a>
         {% else %}
         <!-- Если статья бесплатная или пользователь подписан -->
         <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' object.pk %}">Читать статью &raquo;</a>
@@ -78,11 +78,12 @@
       </div>
     </div>
   </div>
+  </div>
   <hr class="featurette-divider">
   {% endfor %}
 
 
   <!-- /END THE FEATURETTES -->
 
-
+</div>
   {% endblock %}
