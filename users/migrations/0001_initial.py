@@ -2,7 +2,6 @@
 
 import django.contrib.auth.models
 import django.utils.timezone
-import users.validators
 from django.db import migrations, models
 
 
@@ -29,7 +28,7 @@ class Migration(migrations.Migration):
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('username', models.CharField(blank=True, max_length=150, null=True)),
                 ('name', models.CharField(help_text='Введите имя', max_length=50, verbose_name='Имя')),
-                ('phone', models.CharField(help_text='Введите номер телефона', max_length=20, unique=True, validators=[users.validators.validate_phone_number], verbose_name='Номер телефона')),
+                ('phone', models.CharField(help_text='Введите номер телефона', max_length=20, unique=True, verbose_name='Номер телефона')),
                 ('email', models.EmailField(help_text='Введите электронную почту', max_length=254, unique=True, verbose_name='Электронная почта')),
                 ('tg_nick', models.CharField(blank=True, help_text='Введите ник в Telegram', max_length=50, null=True, unique=True, verbose_name='Ник в Telegram')),
                 ('avatar', models.ImageField(blank=True, help_text='Выберите изображение', null=True, upload_to='users/', verbose_name='Аватар')),

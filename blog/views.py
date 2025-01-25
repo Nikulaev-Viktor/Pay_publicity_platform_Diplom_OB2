@@ -1,9 +1,10 @@
+
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
-
 from blog.models import Blog, Category
 from users.models import User
 
@@ -51,23 +52,23 @@ class ContactsView(View):
         return render(request, 'blog/contacts.html', context)
 
 
-class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class BlogCreateView(LoginRequiredMixin, CreateView):
     """Контроллер создания статьи"""
     model = Blog
-    fields = ('title', 'content', 'image', 'is_published', 'is_subscribed', 'category', 'author')
-    success_url = reverse_lazy('blog:list')
-    permission_required = 'blog.can_add_blog'
+    fields = ('title', 'content', 'image', 'is_published', 'is_subscribed', 'category')
+    success_url = reverse_lazy('blog:blog_list')
     extra_context = {'title': 'Создание статьи'}
 
-    def has_permission(self):
-        return self.request.user.is_superuser or super().has_permission()
-
     def form_valid(self, form):
-        new_mat = form.save()
-        user = self.request.user
-        new_mat.author = user
-        new_mat.save()
+        form.instance.author = self.request.user
         return super().form_valid(form)
+
+    # def form_valid(self, form):
+    #     new_mat = form.save()
+    #     user = self.request.user
+    #     new_mat.author = user
+    #     new_mat.save()
+    #     return super().form_valid(form)
 
 
 class BlogListView(ListView):
@@ -75,7 +76,6 @@ class BlogListView(ListView):
     model = Blog
     template_name = 'blog/blog_list.html'
     paginate_by = 9
-    # permission_required = 'blog.can_view_blog'
     extra_context = {'title': 'Список статей'}
 
     def get_queryset(self, *args, **kwargs):
@@ -117,12 +117,14 @@ class BlogDetailView(DetailView):
         return context
 
 
-class BlogUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+#
+
+
+class BlogUpdateView(LoginRequiredMixin, UpdateView):
     """Контроллер редактирования статьи"""
     model = Blog
-    fields = ('title', 'content', 'image', 'is_published', 'is_subscribed', 'category')
-    success_url = reverse_lazy('blog:list')
-    permission_required = 'blog.can_change_blog'
+    fields = ('title', 'content', 'image', 'is_published', 'is_subscribed', 'category',)
+    success_url = reverse_lazy('blog:blog_list')
     extra_context = {'title': 'Редактирование статьи'}
 
 
@@ -157,11 +159,10 @@ def toggle_subscription(request, pk):
     return redirect(reverse('blog:list'))
 
 
-class BlogDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class BlogDeleteView(LoginRequiredMixin, DeleteView):
     """Контроллер удаления статьи"""
     model = Blog
-    success_url = reverse_lazy('blog:list')
-    permission_required = 'blog.can_delete_blog'
+    success_url = reverse_lazy('blog:blog_list')
     extra_context = {'title': 'Удаление статьи'}
 
 
@@ -193,6 +194,4 @@ class CategoryDetailView(ListView):
         else:
             context['is_subscribed'] = False
         return context
-
-
 

@@ -1,89 +1,85 @@
 {% extends 'blog/base.html' %}
+
 {% block content %}'
 
-<!-- Marketing messaging and featurettes
-================================================== -->
-<!-- Wrap the rest of the page in another container to center all the content. -->
 
-<div class="container marketing">
+    <div class="container marketing">
+        <!-- Three columns of text below the carousel -->
+        <div class="row">
+            <div class="col-lg-4">
+                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                     xmlns="http://www.w3.org/2000/svg"
+                     role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice"
+                     focusable="false"><title>
+                    Placeholder</title>
+                    <rect width="100%" height="100%" fill="#777"/>
+                    <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
+                </svg>
 
-  <!-- Three columns of text below the carousel -->
-  <div class="row">
-    <div class="col-lg-4">
-      <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
-           role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>
-        Placeholder</title>
-        <rect width="100%" height="100%" fill="#777"/>
-        <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
-      </svg>
+                <h2 class="fw-normal">Статьи</h2>
+                <p>Количество статей в нашем блоге: {{ total_posts }}</p>
+                <p><a class="btn btn-secondary" href="{% url 'blog:blog_list' %}">Подробнее &raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                     xmlns="http://www.w3.org/2000/svg"
+                     role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice"
+                     focusable="false"><title>
+                    Placeholder</title>
+                    <rect width="100%" height="100%" fill="#777"/>
+                    <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
+                </svg>
 
-      <h2 class="fw-normal">Статьи</h2>
-      <p>Количество статей в нашем блоге: {{ total_posts }}</p>
-      <p><a class="btn btn-secondary" href="{% url 'blog:blog_list' %}">Подробнее &raquo;</a></p>
-    </div><!-- /.col-lg-4 -->
-    <div class="col-lg-4">
-      <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
-           role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>
-        Placeholder</title>
-        <rect width="100%" height="100%" fill="#777"/>
-        <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
-      </svg>
+                <h2 class="fw-normal">Авторы</h2>
+                <p>Количество авторов в нашем блоге: {{ unique_authors }}</p>
+                {% if user.is_authenticated %}
+                <p><a class="btn btn-secondary" href="{% url 'blog:create' %}">Стать автором &raquo;</a></p>
+                {% else %}
+                <p><a class="btn btn-secondary" href="{% url 'users:register' %}">Зарегистрироваться &raquo;</a></p>
+                {% endif %}
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                     xmlns="http://www.w3.org/2000/svg"
+                     role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice"
+                     focusable="false"><title>
+                    Placeholder</title>
+                    <rect width="100%" height="100%" fill="#777"/>
+                    <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
+                </svg>
 
-      <h2 class="fw-normal">Авторы</h2>
-      <p>Количество авторов в нашем блоге: {{ unique_authors }}</p>
-      <p><a class="btn btn-secondary" href="#">Подробнее &raquo;</a></p>
-    </div><!-- /.col-lg-4 -->
-    <div class="col-lg-4">
-      <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
-           role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>
-        Placeholder</title>
-        <rect width="100%" height="100%" fill="#777"/>
-        <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
-      </svg>
-
-      <h2 class="fw-normal">Читатели</h2>
-      <p>Количество читателей в нашем блоге: {{ unique_members }}</p>
-      <p><a class="btn btn-secondary" href="#">Подробнее &raquo;</a></p>
-    </div><!-- /.col-lg-4 -->
-  </div><!-- /.row -->
+                <h2 class="fw-normal">Читатели</h2>
+                <p>Количество читателей в нашем блоге: {{ unique_members }}</p>
+                <p><a class="btn btn-secondary" href="#">Подробнее &raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+        </div><!-- /.row -->
 
 
-  <!-- START THE FEATURETTES -->
+        {% for object in random_posts %}
+            <div class="row featurette">
+                <div class="col-md-7 {% if forloop.counter|divisibleby:2 %}order-md-2{% endif %}">
 
-  {% for object in random_posts %}
-  <div class="row featurette">
-    {% if forloop.counter|divisibleby:2 %}
-    <div class="col-md-7 order-md-2">
-      {% else %}
-      <div class="col-md-7">
-        {% endif %}
-        <h2 class="featurette-heading">{{ object.title }}</h2>
-        <p class="lead">{{ object.content|truncatechars:200 }}</p>
-        <small class="text-body-secondary">Дата создания: {{ object.created_at|date:"d M Y"}}</small>
-        <br>
-        <small class="text-body-secondary">Количество просмотров: {{ object.views_count }}</small>
-        <br>
+                    <h2 class="featurette-heading">{{ object.title }}</h2>
+                    <p class="lead">{{ object.content|truncatechars:200 }}</p>
+                    <small class="text-body-secondary">Дата создания: {{ object.created_at|date:"d M Y" }}</small>
+                    <br>
+                    <small class="text-body-secondary">Количество просмотров {{ object.views_count }}</small>
+                    <br>
 
-        {% if object.is_subscribed and not is_subscribed %}
-        <!-- Если статья платная, но пользователь не подписан -->
-        <a class="btn btn-secondary mt-3" href="{% url 'users:subscribe' %}">Оформить подписку &raquo;</a>
-        {% else %}
-        <!-- Если статья бесплатная или пользователь подписан -->
-        <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' object.pk %}">Читать статью &raquo;</a>
-        {% endif %}
-      </div>
+                    {% if object.is_subscribed and not is_subscribed %}
+                        <a class="btn btn-secondary mt-3" href="{% url 'users:subscribe' %}">Оформить подписку¬</a>
+                    {% else %}
+                        <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' object.pk %}">Читать статью</a>
+                    {% endif %}
+                </div>
+                <div class="col-md-5">
+                    <img src="/media/{{ object.image }}" width="500" height="500">
+                </div>
 
-      <div class="col-md-5">
-        <img src="/media/{{ object.image }}" width="500" height="500">
-      </div>
+            </div>
+
+            <hr class="featurette-divider">
+        {% endfor %}
+
     </div>
-  </div>
-  </div>
-  <hr class="featurette-divider">
-  {% endfor %}
-
-
-  <!-- /END THE FEATURETTES -->
-
-</div>
-  {% endblock %}
+{% endblock %}

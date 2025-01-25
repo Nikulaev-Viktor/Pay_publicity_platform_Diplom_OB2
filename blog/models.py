@@ -37,7 +37,6 @@ class Blog(models.Model):
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
         permissions = [
-            ('can_view_blog', 'Can view blog'),
             ('can_change_blog', 'Can change blog'),
             ('can_delete_blog', 'Can delete blog'),
         ]

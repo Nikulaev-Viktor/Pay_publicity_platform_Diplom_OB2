@@ -4,7 +4,6 @@ from django.forms import BooleanField
 from phonenumber_field.formfields import PhoneNumberField
 
 from users.models import User
-from users.validators import validate_phone_number
 
 
 class StyleFormMixin:
@@ -21,8 +20,7 @@ class StyleFormMixin:
 
 class UserRegisterForm(StyleFormMixin, UserCreationForm):
     """Форма для регистрации пользователя"""
-    phone = PhoneNumberField(label='Номер телефона', widget=forms.TextInput(attrs={'placeholder': '+71234567890'}),
-                             validators=[validate_phone_number])
+    phone = PhoneNumberField(label='Номер телефона', widget=forms.TextInput(attrs={'placeholder': '+71234567890'}))
 
     class Meta:
         model = User
@@ -84,8 +82,7 @@ class UserProfileForm(StyleFormMixin, UserChangeForm):
 
 class PasswordResetRequestForm(forms.Form):
     """Форма для запроса сброса пароля"""
-    phone = PhoneNumberField(label='Номер телефона', widget=forms.TextInput(attrs={'placeholder': '+71234567890'}),
-                             validators=[validate_phone_number])
+    phone = PhoneNumberField(label='Номер телефона', widget=forms.TextInput(attrs={'placeholder': '+71234567890'}))
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']

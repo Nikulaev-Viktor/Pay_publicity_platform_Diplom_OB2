@@ -16,7 +16,7 @@ class User(AbstractUser):
     name = models.CharField(max_length=50, verbose_name='Имя', help_text='Введите имя')
     phone = PhoneNumberField(max_length=20, unique=True, verbose_name='Номер телефона',
                              help_text='Введите номер телефона')
-    email = models.EmailField(unique=True, verbose_name='Электронная почта', help_text='Введите электронную почту', **NULLABLE)
+    email = models.EmailField(verbose_name='Электронная почта', help_text='Введите электронную почту', **NULLABLE)
     tg_nick = models.CharField(max_length=50, unique=True, verbose_name='Ник в Telegram',
                                help_text='Введите ник в Telegram', **NULLABLE)
     avatar = models.ImageField(upload_to='users/', verbose_name='Аватар', help_text='Выберите изображение', **NULLABLE)
@@ -47,14 +47,13 @@ class User(AbstractUser):
         print(f'Отправлено SMS на {self.phone}: Ваш код подтверждения: {self.otp_code}')
         send_mock_sms(self.phone, self.otp_code)
 
-    def verify_otp(self, otp):
-        if not self.otp_code or self.otp_code != otp:
-            return False, 'Неверный код подтверждения.'
-        if self.otp_created_at < now() - timedelta(minutes=5):
-            return False, 'Срок действия OTP истек.'
-        self.otp_code = None  # Код подтвержден, удаляем его
-        self.save()
-        return True, 'Код подтвержден.'
+    def verify_otp(self, input_otp):
+        """Проверка кода подтверждения."""
+        is_valid, message = verify_otp(self.otp_code, self.otp_created_at, input_otp)
+        if is_valid:
+            self.otp_code = None  # Код подтвержден, сбрасываем его
+            self.save()
+        return is_valid, message
 
 
 class Payment(models.Model):
@@ -74,7 +73,3 @@ class Payment(models.Model):
 
     def __str__(self):
         return f'Платеж {self.id} - {self.user} - {self.amount} руб.'
-
-
-
-
