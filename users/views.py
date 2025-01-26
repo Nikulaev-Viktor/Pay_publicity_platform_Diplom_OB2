@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import CreateView, FormView, UpdateView, ListView, DetailView, DeleteView, TemplateView
+from django.views.generic import CreateView, FormView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.views import LoginView
 from django.views import View
 from django.urls import reverse_lazy
@@ -42,7 +42,7 @@ class UserOTPVerifyView(FormView):
         otp_valid, otp_message = user.verify_otp(otp)
         if not otp_valid:
             form.add_error('otp', otp_message)
-            return self.form_invalid(form)  # Возвращаем ошибку и остаёмся на той же странице
+            return self.form_invalid(form)
 
         # Если OTP верный, проверяем действие
         action = self.kwargs.get('action')
@@ -82,27 +82,6 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-# class UserListView(LoginRequiredMixin, ListView):
-#     """Контроллер списка пользователей"""
-#     model = User
-#     template_name = 'user_list.html'
-
-class UserDetailView(LoginRequiredMixin, DetailView):
-    """Контроллер пользователя"""
-    model = User
-
-
-# class UserUpdateView(LoginRequiredMixin, UpdateView):
-#     """Контроллер редактирования пользователя"""
-#     model = User
-#     fields = [
-#         'id',
-#         'phone',
-#         'is_active',
-#     ]
-#     success_url = reverse_lazy('users:user_list')
-
-
 class UserDeleteView(LoginRequiredMixin, DeleteView):
     """Контроллер удаления пользователя"""
     model = User
@@ -125,8 +104,6 @@ class PasswordResetRequestView(FormView):
 
     def form_valid(self, form):
         phone = form.cleaned_data['phone']
-
-        # Получаем пользователя по номеру телефона
         user = User.objects.filter(phone=phone).first()
         if not user:
             form.add_error('phone', 'Пользователь с таким номером не найден.')
@@ -136,7 +113,6 @@ class PasswordResetRequestView(FormView):
         user.send_mock_sms()
         user.is_otp_sent = True
         user.save()
-
         messages.info(self.request, 'OTP отправлен на ваш номер телефона.')
         return redirect('users:otp_verify', action='password_reset', pk=user.pk)
 
@@ -150,16 +126,14 @@ class NewPasswordView(FormView):
     def get_context_data(self, **kwargs):
         user = get_object_or_404(User, pk=self.kwargs['pk'])
         context = super().get_context_data(**kwargs)
-        context['user'] = 'user'
+        context['user'] = user
         return context
 
     def form_valid(self, form):
         new_password = form.cleaned_data['new_password1']
         user = get_object_or_404(User, pk=self.kwargs['pk'])
-
         user.set_password(new_password)
         user.save()
-
         messages.success(self.request, 'Пароль успешно изменен.')
         return redirect('users:login')
 
@@ -183,13 +157,12 @@ class CreatePaymentView(View, HttpResponseForbidden):
         price = create_stripe_price()
         session_id, session_url = create_stripe_session(price)
 
-        payment = Payment.objects.create(
+        Payment.objects.create(
             user=request.user,
             amount=500,
             stripe_session_id=session_id,
             status='pending',
         )
-
         return redirect(session_url)
 
 

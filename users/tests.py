@@ -213,5 +213,3 @@ class StripeServiceTests(TestCase):
         self.assertFalse(status)
         self.assertEqual(self.payment.status, "pending")
         self.assertFalse(self.user.is_subscribed)
-
-

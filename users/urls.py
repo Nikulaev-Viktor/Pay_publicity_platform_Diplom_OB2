@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
 from users.apps import UsersConfig
 from users.views import ProfileView, CreateUserView, UserDeleteView, UserOTPVerifyView, UserDeleteConfirmationView, \
@@ -20,8 +20,4 @@ urlpatterns = [
     path('create-payment/', CreatePaymentView.as_view(), name='create_payment'),
     path('subscribe/success/', SubscribeSuccessView.as_view(), name='subscribe_success'),
     path('subscribe/cancel/', SubscribeCancelView.as_view(), name='subscribe_cancel'),
-
-
-
-
 ]

@@ -1,5 +1,3 @@
-
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.views import View
@@ -63,13 +61,6 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-    # def form_valid(self, form):
-    #     new_mat = form.save()
-    #     user = self.request.user
-    #     new_mat.author = user
-    #     new_mat.save()
-    #     return super().form_valid(form)
-
 
 class BlogListView(ListView):
     """Контроллер просмотра статей"""
@@ -115,9 +106,6 @@ class BlogDetailView(DetailView):
             context['is_subscribed'] = False
 
         return context
-
-
-#
 
 
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
@@ -194,4 +182,3 @@ class CategoryDetailView(ListView):
         else:
             context['is_subscribed'] = False
         return context
-

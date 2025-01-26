@@ -1,12 +1,11 @@
 from django.urls import reverse
-from django.contrib.auth import authenticate
 from django.test import TestCase
 from blog.models import Category, Blog
 from users.models import User
 
 
 class CategoryTests(TestCase):
-    """Тесты для модели Category и соответствующих представлений."""
+    """Тесты для модели Category."""
 
     def setUp(self):
         self.category = Category.objects.create(name='Test Category')
@@ -141,7 +140,7 @@ class BlogViewsTests(TestCase):
             'is_subscribed': False,
         })
         self.assertRedirects(response, reverse('blog:blog_list'))
-        self.assertEqual(Blog.objects.count(), 4)  # Учитываем добавленный новый блог
+        self.assertEqual(Blog.objects.count(), 4)
 
     def test_blog_update_view(self):
         """Тест на обновление блога"""

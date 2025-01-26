@@ -17,7 +17,7 @@
                 </svg>
 
                 <h2 class="fw-normal">Статьи</h2>
-                <p>Количество статей в нашем блоге: {{ total_posts }}</p>
+                <p>Количество статей в блоге: {{ total_posts }}</p>
                 <p><a class="btn btn-secondary" href="{% url 'blog:blog_list' %}">Подробнее &raquo;</a></p>
             </div><!-- /.col-lg-4 -->
             <div class="col-lg-4">
@@ -31,7 +31,7 @@
                 </svg>
 
                 <h2 class="fw-normal">Авторы</h2>
-                <p>Количество авторов в нашем блоге: {{ unique_authors }}</p>
+                <p>Количество авторов в блоге: {{ unique_authors }}</p>
                 {% if user.is_authenticated %}
                 <p><a class="btn btn-secondary" href="{% url 'blog:create' %}">Стать автором &raquo;</a></p>
                 {% else %}
@@ -49,7 +49,7 @@
                 </svg>
 
                 <h2 class="fw-normal">Читатели</h2>
-                <p>Количество читателей в нашем блоге: {{ unique_members }}</p>
+                <p>Количество читателей в блоге: {{ unique_members }}</p>
                 <p><a class="btn btn-secondary" href="#">Подробнее &raquo;</a></p><br>
             </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
@@ -67,7 +67,7 @@
                     <br>
 
                     {% if object.is_subscribed and not is_subscribed %}
-                        <a class="btn btn-secondary mt-3" href="{% url 'users:subscribe' %}">Оформить подписку¬</a>
+                        <a class="btn btn-secondary mt-3" href="{% url 'users:subscribe' %}">Оформить подписку</a>
                     {% else %}
                         <a class="btn btn-secondary mt-3" href="{% url 'blog:detail' object.pk %}">Читать статью</a>
                     {% endif %}
